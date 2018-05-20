@@ -1,0 +1,39 @@
+{
+  "name": "http-cors",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build && electron dist",
+    "build": "webpack",
+    "package": "npm run build && electron-packager dist",
+    "package-winstall": "npm run package && node ./script/build-winstall.js"
+  },
+  "config": {
+    "electron_mirror": "https://npm.taobao.org/mirrors/electron/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^2.0.1",
+    "electron-is-dev": "^0.3.0",
+    "electron-settings": "^3.2.0",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.2"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.1",
+    "electron-packager": "^12.1.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3"
+  }
+}
