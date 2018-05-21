@@ -27,7 +27,9 @@ module.exports = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js'
+    filename: '[name].js',
+    library: '[name]',
+    libraryTarget: 'umd'
   },
   plugins: [
     new CleanWebpackPlugin(['dist', 'build', 'http-cors-win32-x64', 'http-cors-darwin-x64']),
