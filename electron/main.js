@@ -34,6 +34,7 @@ function createWindow () {
   require('./tray.js')
   require('./file/beginDelete')
   require('./menu')
+  require('./shortcut');
 }
 
 app.on('quit', function () {
@@ -71,3 +72,5 @@ app.on('before-quit', function (event) {
     event.preventDefault()
   }
 })
+
+module.exports = createWindow;
