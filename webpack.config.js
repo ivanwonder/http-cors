@@ -6,7 +6,8 @@ module.exports = {
   entry: {
     main: './main.js',
     deleteLogFile: './electron/childprocess/deleteLogFile.js',
-    mainWindow: './electron/mainWindow.js'
+    mainWindow: './electron/mainWindow.js',
+    utils: './electron/utils.js'
   },
   target: 'node',
   externals: [
@@ -15,6 +16,13 @@ module.exports = {
         return callback(null, 'commonjs ' + request)
       }
       callback()
+    },
+    function (context, request, callback) {
+      // make the ./electron/utils as a externals.
+      if (path.resolve(__dirname, './electron/utils') === path.resolve(context, request)) {
+        return callback(null, 'commonjs ' + './utils');
+      }
+      callback();
     }
   ],
   output: {

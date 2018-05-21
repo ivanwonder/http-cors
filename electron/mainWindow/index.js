@@ -67,5 +67,5 @@ ipcRender.on('serverOpenResult', (event, args) => {
 })
 
 const Mousetrap = require('mousetrap');
-const {PUT_TO_TRAY} = require('../../utils/constant');
+const {PUT_TO_TRAY} = require('../utils').eventConstant;
 Mousetrap.bind('esc', () => { ipcRender.send(PUT_TO_TRAY) }, 'keyup');
