@@ -7,6 +7,19 @@ const isDev = require('electron-is-dev');
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
+function leaveFullWindow () {
+  return new Promise((resolve, reject) => {
+    if (win.isFullScreen()) {
+      win.setFullScreen(false);
+      win.once('leave-full-screen', function () {
+        resolve();
+      })
+    } else {
+      resolve();
+    }
+  });
+}
+
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({width: 800, height: 600})
@@ -24,7 +37,7 @@ function createWindow () {
   isDev && win.webContents.openDevTools()
 
   win.on('close', (event) => {
-    win.hide()
+    leaveFullWindow(win).then(() => win.hide());
     event.preventDefault()
   })
 

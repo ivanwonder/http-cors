@@ -22,7 +22,7 @@ const template = [
     submenu: [
       {
         label: 'Learn More',
-        click () { shell.openExternal('https://github.com/ivanwonder/http-proxy') }
+        click () { shell.openExternal('https://github.com/ivanwonder/http-cors') }
       }
     ]
   }
