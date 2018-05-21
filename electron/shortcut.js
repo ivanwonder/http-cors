@@ -18,5 +18,6 @@ if (!ret) {
 global.beforeQuitEvent.register(next => {
   return () => {
     globalShortcut.unregisterAll();
+    next();
   }
 }, Date.now())

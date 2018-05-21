@@ -66,3 +66,10 @@ ipcMain.on('openLogFile', function (event, args) {
   type === 1 && shell.openItem(fileName)
   type === 2 && shell.showItemInFolder(fileName)
 })
+
+const {PUT_TO_TRAY} = require('../utils/constant');
+
+ipcMain.on(PUT_TO_TRAY, function () {
+  const win = mainWindow.get('mainWindow');
+  win && win.hide();
+});

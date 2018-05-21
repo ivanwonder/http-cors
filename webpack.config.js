@@ -5,7 +5,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 module.exports = {
   entry: {
     main: './main.js',
-    deleteLogFile: './electron/childprocess/deleteLogFile.js'
+    deleteLogFile: './electron/childprocess/deleteLogFile.js',
+    mainWindow: './electron/mainWindow.js'
   },
   target: 'node',
   externals: [

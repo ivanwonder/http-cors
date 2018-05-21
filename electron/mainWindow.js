@@ -1,0 +1,1 @@
+require('./mainWindow/index');
