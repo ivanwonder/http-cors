@@ -3,7 +3,8 @@ var electronInstaller = require('electron-winstaller')
 var resultPromise = electronInstaller.createWindowsInstaller({
   appDirectory: './http-cors-win32-x64',
   outputDirectory: './build/installer64',
-  authors: 'My App Inc.',
+  authors: 'ivan',
+  // version: require('../package.json').version + '.0',
   // exe: 'myapp.exe',
   description: 'proxy server'
 })

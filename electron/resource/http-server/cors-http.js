@@ -20,9 +20,9 @@ class MinProxy {
 
   requestHandler (req, res) {
     var path = req.headers.path || url.parse(req.url).path;
-    const {host, port} = url.parse(this.proxyUrl);
+    const {hostname, port} = url.parse(this.proxyUrl);
     var requestOptions = {
-      host: host,
+      host: hostname,
       port: port || 80,
       path: path,
       method: req.method,
@@ -30,6 +30,17 @@ class MinProxy {
     };
 
     this.onBeforeRequest(requestOptions);
+
+    // preflight
+    if (String.prototype.toLocaleLowerCase.call(requestOptions.method) === 'options') {
+      res.statusCode = 200;
+      res.setHeader('Content-Length', '0');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
+      res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
+      res.end();
+      return;
+    }
 
     var remoteRequest = http.request(requestOptions, function (remoteResponse) {
       // write out headers to handle redirects

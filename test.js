@@ -1,8 +1,8 @@
-const MiniProxy = require('./electron/cors-http');
+const MiniProxy = require('./electron/resource/http-server/cors-http');
 
 var myProxy = new MiniProxy({
   'port': 8080,
-  proxyUrl: 'http://test.com',
+  proxyUrl: 'http://192.168.1.122:8090',
   'onBeforeRequest': function (requestOptions) {
     console.log('proxy request : ' + (new Date()).toLocaleString() + '|' + (requestOptions.requestAddress || '') + '|' + (requestOptions.path || '') + '|' + (requestOptions.port || ''))
   },
