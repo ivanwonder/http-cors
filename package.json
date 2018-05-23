@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && electron dist",
-    "build": "webpack && ng build",
+    "build": "webpack && ng build --prod",
     "package": "npm run build && electron-packager dist",
     "package-winstall": "npm run package && node ./script/build-winstall.js",
     "serve": "ng serve"
