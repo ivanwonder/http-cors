@@ -31,7 +31,7 @@
   <p style="color: red;" *ngIf="error.hasError">{{error.errorInfo}}</p>
 </div>
 
-<mat-card class="example-card" *ngFor="let item of dataOutput">
+<mat-card class="example-card" *ngFor="let item of dataOutput" [@flyInOut]>
   <mat-card-content>
     <p>
       localhost port: <strong>{{item.port}}</strong>; target url: <strong>{{item.targetUrl}}</strong>;

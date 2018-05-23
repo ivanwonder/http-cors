@@ -1,6 +1,13 @@
 import { Component, OnInit, NgZone} from '@angular/core';
 import {ElectronService} from './electron.service';
 import Mousetrap from 'mousetrap';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations';
 
 interface DataOutput {
   id: any;
@@ -12,7 +19,19 @@ interface DataOutput {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  animations: [
+    trigger('flyInOut', [
+      state('in', style({transform: 'translateX(0)'})),
+      transition('void => *', [
+        style({transform: 'translateX(-100%)'}),
+        animate(100)
+      ]),
+      transition('* => void', [
+        animate(100, style({transform: 'translateX(100%)'}))
+      ])
+    ])
+  ]
 })
 export class AppComponent implements OnInit {
   dataInput = ['port', 'targetUrl'];
@@ -39,7 +58,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.ipcRender.on('message', (event, message, time) => {
       this._zone.run(() => {
-        console.log(message);
         if (message.error) {
           this.error.hasError = true;
           this.error.errorInfo = message.error;
@@ -56,7 +74,6 @@ export class AppComponent implements OnInit {
     });
 
     this.ipcRender.on('serverCloseResult', (event, args) => {
-      console.log(args);
       if (args.code === 0) {
         this._zone.run(() => this.removeEle(args.id));
         // this.removeEle(args.id);
@@ -64,7 +81,6 @@ export class AppComponent implements OnInit {
     });
 
     this.ipcRender.on('serverOpenResult', (event, args) => {
-      console.log(args);
       if (args.code === 0) {
         this._zone.run(() => this.createProxyElement(args.id, args.args));
       }
