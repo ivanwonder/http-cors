@@ -1,6 +1,13 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, NgZone} from '@angular/core';
 import {ElectronService} from './electron.service';
 import Mousetrap from 'mousetrap';
+
+interface DataOutput {
+  id: any;
+  port: number;
+  targetUrl: string;
+  type?: number;
+}
 
 @Component({
   selector: 'app-root',
@@ -8,84 +15,87 @@ import Mousetrap from 'mousetrap';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'app';
+  dataInput = ['port', 'targetUrl'];
+  dataOutput: Array<DataOutput> = [];
+  port = '';
+  targetUrl = '';
+
+  error = {
+    hasError: false,
+    errorInfo: ''
+  };
+
   ipcRender;
   eleMap = new Map();
   parent = document.getElementById('server_opened');
 
   constructor(
-    private electronService: ElectronService
+    private electronService: ElectronService,
+    private _zone: NgZone
   ) {
     this.ipcRender = electronService.ipcRenderer;
   }
 
   ngOnInit() {
-    document.getElementById('createServer').addEventListener('click', function () {
-      this.ipcRender.send('createServer', {
-        port: (document.getElementById('port') as HTMLInputElement).value || 9393,
-        proxyUrl: (document.getElementById('proxy_url') as HTMLInputElement).value || ''
-      })
-      this.ipcRender.on('message', function (event, message) {
-        let err = document.getElementById('error')
-        if (message.error) {
-          err.innerHTML = message.error
-          err.style.display = ''
-        }
-    
-        if (message.success) {
-          err.style.display = 'none'
-        }
-    
-        if (message.debug) {
-          console.log(message.debug)
-        }
-      })
-    }.bind(this))
-
     this.ipcRender.on('serverCloseResult', (event, args) => {
       if (args.code === 0) {
-        this.removeEle(args.id)
+        this._zone.run(() => this.removeEle(args.id));
+        // this.removeEle(args.id);
       }
-    })
-    
+    });
+
     this.ipcRender.on('serverOpenResult', (event, args) => {
       if (args.code === 0) {
-        this.createProxyElement(args.id, args.args)
+        this._zone.run(() => this.createProxyElement(args.id, args.args));
       }
-    })
+    });
 
     const {PUT_TO_TRAY} = this.electronService.remote.require('./utils.js').eventConstant;
-    Mousetrap.bind('esc', () => { this.ipcRender.send(PUT_TO_TRAY) }, 'keyup');
+    Mousetrap.bind('esc', () => { this.ipcRender.send(PUT_TO_TRAY); }, 'keyup');
   }
 
   createProxyElement (id, args) {
-    let li = document.createElement('li')
-    let name = document.createTextNode(`server id: ${args.port}; proxyUrl: ${args.proxyUrl};`)
-    let button = document.createElement('button')
-    button.textContent = 'close proxy'
-    button.addEventListener('click', () => this.ipcRender.send('closeServer', {id}))
+    const item: DataOutput = {
+      id,
+      port: args.port,
+      targetUrl: args.proxyUrl
+    };
+    this.dataOutput.push(item);
+  }
 
-    let button1 = document.createElement('button')
-    button1.textContent = 'open log'
-    button1.addEventListener('click', () => this.ipcRender.send('openLogFile', {id, type: 1}))
+  close(item: DataOutput) {
+    this.ipcRender.send('closeServer', {id: item.id});
+  }
 
-    let button2 = document.createElement('button')
-    button2.textContent = 'show log in explorer'
-    button2.addEventListener('click', () => this.ipcRender.send('openLogFile', {id, type: 2}))
-
-    li.appendChild(name)
-    li.appendChild(button)
-    li.appendChild(button1)
-    li.appendChild(button2)
-
-    this.eleMap.set(id, li)
-
-    this.parent.appendChild(li)
+  open(type, item: DataOutput) {
+    this.ipcRender.send('openLogFile', {id: item.id, type});
   }
 
   removeEle (id) {
-    this.parent.removeChild(this.eleMap.get(id))
-    this.eleMap.delete(id)
+    this.dataOutput = this.dataOutput.filter(item => item.id !== id);
+  }
+
+  create() {
+    this.ipcRender.send('createServer', {
+      port: this.port || 9393,
+      proxyUrl: this.targetUrl || ''
+    });
+    this.ipcRender.on('message', (event, message) => {
+      this._zone.run(() => {
+        if (message.error) {
+          this.error.hasError = true;
+          this.error.errorInfo = message.error;
+        }
+
+        if (message.success) {
+          this.error.hasError = false;
+        }
+
+        if (message.debug) {
+          console.log(message.debug);
+        }
+      });
+    });
   }
 
 }
