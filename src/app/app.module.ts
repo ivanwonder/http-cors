@@ -9,10 +9,24 @@ import {MatIconModule} from '@angular/material/icon';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import {RouterModule, Routes} from '@angular/router';
+import {CreateServeComponent} from './create-serve/create-serve.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import { EditJsonComponent } from './edit-json/edit-json.component';
+
+const appRoutes: Routes = [{
+  path: '',
+  component: CreateServeComponent
+}, {
+  path: 'edit/:id',
+  component: EditJsonComponent
+}];
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CreateServeComponent,
+    EditJsonComponent
   ],
   imports: [
     BrowserModule,
@@ -21,9 +35,12 @@ import {MatCardModule} from '@angular/material/card';
     MatIconModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatToolbarModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [ElectronService],
+  entryComponents: [CreateServeComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

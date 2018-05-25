@@ -1,0 +1,45 @@
+<!-- <ul>
+  <li>port :
+    <input id="port">
+  </li>
+  <li>proxy url :
+    <input id="proxy_url">
+  </li>
+  <input type="button" value="create proxy server" id="createServer">
+  <p id="error" style="color: red; display:none"></p>
+</ul>
+<ul id="server_opened">
+  <li>the server opened:</li>
+</ul> -->
+
+<mat-form-field class="example-form-field">
+  <input matInput type="text" placeholder="port" [(ngModel)]="port" />
+  <button mat-button *ngIf="port" matSuffix mat-icon-button aria-label="Clear" (click)="port=''">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
+<br>
+<mat-form-field class="example-form-field">
+  <input matInput type="text" placeholder="target url" [(ngModel)]="targetUrl" />
+  <button mat-button *ngIf="targetUrl" matSuffix mat-icon-button aria-label="Clear" (click)="targetUrl=''">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
+
+<div>
+  <button mat-raised-button color="primary" (click)="create()">create proxy server</button>
+  <p style="color: red;" *ngIf="error.hasError">{{error.errorInfo}}</p>
+</div>
+
+<mat-card class="example-card" *ngFor="let item of dataOutput" [@flyInOut]>
+  <mat-card-content>
+    <p>
+      localhost port: <strong>{{item.port}}</strong>; target url: <strong>{{item.targetUrl}}</strong>;
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="close(item)">close proxy</button>
+    <button mat-raised-button (click)="open(1, item)">open log</button>
+    <button mat-raised-button (click)="open(2, item)">show log in explorer</button>
+  </mat-card-actions>
+</mat-card>
