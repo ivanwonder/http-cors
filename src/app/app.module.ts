@@ -13,12 +13,14 @@ import {RouterModule, Routes} from '@angular/router';
 import {CreateServeComponent} from './create-serve/create-serve.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { EditJsonComponent } from './edit-json/edit-json.component';
+import {ServeInstanceService} from './serve-instance.service';
+import {EditObserveService} from './edit-observe.service';
 
 const appRoutes: Routes = [{
   path: '',
   component: CreateServeComponent
 }, {
-  path: 'edit/:id',
+  path: 'edit/:id/:port',
   component: EditJsonComponent
 }];
 
@@ -39,7 +41,7 @@ const appRoutes: Routes = [{
     MatToolbarModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [ElectronService],
+  providers: [ElectronService, ServeInstanceService, EditObserveService],
   entryComponents: [CreateServeComponent],
   bootstrap: [AppComponent]
 })

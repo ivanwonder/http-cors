@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
-  <a mat-button>create serve</a>
-  <a mat-button>edit json</a>
+  <a mat-button routerLink="/">create serve</a>
+  <a mat-button *ngFor="let item of editInstance" [routerLink]="['edit', item.id, item.port]">{{item.port}}</a>
 </mat-toolbar>
 <div class="route-container">
   <router-outlet></router-outlet>

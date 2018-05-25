@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone} from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy} from '@angular/core';
 import {ElectronService} from '../electron.service';
 import Mousetrap from 'mousetrap';
 import {
@@ -8,13 +8,10 @@ import {
   animate,
   transition
 } from '@angular/animations';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ServeInstanceService, DataOutput} from '../serve-instance.service';
+import {EditObserveService} from '../edit-observe.service';
 
-interface DataOutput {
-  id: any;
-  port: number;
-  targetUrl: string;
-  type?: number;
-}
 @Component({
   selector: 'app-create-serve',
   templateUrl: './create-serve.component.html',
@@ -32,7 +29,7 @@ interface DataOutput {
     ])
   ]
 })
-export class CreateServeComponent implements OnInit {
+export class CreateServeComponent implements OnInit, OnDestroy {
 
   dataInput = ['port', 'targetUrl'];
   dataOutput: Array<DataOutput> = [];
@@ -50,9 +47,14 @@ export class CreateServeComponent implements OnInit {
 
   constructor(
     private electronService: ElectronService,
-    private _zone: NgZone
+    private _zone: NgZone,
+    private _route: Router,
+    private activateRoute: ActivatedRoute,
+    private serve: ServeInstanceService,
+    private _edit$: EditObserveService
   ) {
     this.ipcRender = electronService.ipcRenderer;
+    this.dataOutput = serve.get();
   }
 
   ngOnInit() {
@@ -96,7 +98,9 @@ export class CreateServeComponent implements OnInit {
       port: args.port,
       targetUrl: args.proxyUrl
     };
-    this.dataOutput.push(item);
+    // this.dataOutput.push(item);
+    this.serve.add(item);
+    this.dataOutput = this.serve.get();
   }
 
   close(item: DataOutput) {
@@ -108,7 +112,8 @@ export class CreateServeComponent implements OnInit {
   }
 
   removeEle (id) {
-    this.dataOutput = this.dataOutput.filter(item => item.id !== id);
+    this.dataOutput = this.serve.remove(id);
+    this._edit$.editDeleteObserve.next(id);
   }
 
   create() {
@@ -118,4 +123,13 @@ export class CreateServeComponent implements OnInit {
     });
   }
 
+  edit(item: DataOutput) {
+    this._route.navigate(['../edit', item.id, item.port], {relativeTo: this.activateRoute});
+  }
+
+  ngOnDestroy () {
+    this.ipcRender.removeAllListeners('message');
+    this.ipcRender.removeAllListeners('serverCloseResult');
+    this.ipcRender.removeAllListeners('serverOpenResult');
+  }
 }
