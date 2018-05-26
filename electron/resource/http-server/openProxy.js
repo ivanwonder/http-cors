@@ -32,7 +32,15 @@ process.on('message', (m) => {
     myProxy.start()
   }
   if (m.msgId === ADD_INTERCEPT_URL) {
-    require('./intercept-request').add(m.data);
-    process.send(ADD_INTERCEPT_URL_STATUS, {status: 1});
+    let data = m.data;
+    try {
+      if (typeof data === 'string') {
+        data = JSON.parse(data);
+      }
+    } catch (e) {
+      data = {};
+    }
+    require('./intercept-request').add(data);
+    process.send({msgId: ADD_INTERCEPT_URL_STATUS, status: 1});
   }
 })

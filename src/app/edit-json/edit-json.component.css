@@ -1,0 +1,4 @@
+.edit-container {
+  height: calc(100vh - 136px);
+  margin: 8px;
+}

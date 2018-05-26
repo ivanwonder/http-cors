@@ -76,11 +76,16 @@ ipcMain.on(PUT_TO_TRAY, function () {
 
 ipcMain.on(ADD_INTERCEPT_URL, function (event, arg) {
   if (arg.id) {
-    const cp = childProcess.get(arg.id);
-    cp.send(ADD_INTERCEPT_URL, arg.data);
-    cp.once(ADD_INTERCEPT_URL_STATUS, function (env, _arg) {
-      const win = mainWindow.get('mainWindow');
-      win.webContents.send(ADD_INTERCEPT_URL_STATUS, {id: arg.id, data: _arg});
+    const cp = childProcess.get(Number(arg.id));
+    cp.send({
+      msgId: ADD_INTERCEPT_URL,
+      data: arg.data
+    });
+    cp.once('message', function (_arg) {
+      if (_arg.msgId === ADD_INTERCEPT_URL_STATUS) {
+        const win = mainWindow.get('mainWindow');
+        win.webContents.send(ADD_INTERCEPT_URL_STATUS, {id: arg.id, data: _arg});
+      }
     })
   }
 })

@@ -40,11 +40,15 @@ export class AppComponent implements OnInit, OnDestroy {
       this.editInstance = this.editInstance.filter(item => item.id !== String(id));
     });
        
+    const self = this;
     this.electronService.ipcRenderer.on(this.ADD_INTERCEPT_URL_STATUS, function (event, message) {
-      if (message.status) {
-        this.snackBar.open('PizzaPartyComponent', {
-          duration: 500,
-        });
+      if (message.data.status) {
+        self._zone.run(() => {
+          self.snackBar.open('PizzaPartyComponent', '', {
+            duration: 500,
+            verticalPosition: 'top'
+          });
+        })
       }
     });
   }

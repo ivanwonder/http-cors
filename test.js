@@ -1,4 +1,5 @@
 const MiniProxy = require('./electron/resource/http-server/cors-http');
+const {add} = require('./electron/resource/http-server/intercept-request');
 
 var myProxy = new MiniProxy({
   'port': 8080,
@@ -15,5 +16,9 @@ var myProxy = new MiniProxy({
     console.log(1)
   }
 })
+
+add({
+  '/test/**': '1'
+});
 
 myProxy.start()

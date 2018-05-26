@@ -6,7 +6,11 @@ module.exports = {
     for (let i in interceptConfig) {
       if (Object.prototype.hasOwnProperty.call(interceptConfig, i)) {
         if (pathToRegexp(i).exec(req.path)) {
-          res.send(interceptConfig[i]);
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          let bodyData = interceptConfig[i];
+          bodyData = (typeof bodyData === 'string') ? bodyData : JSON.stringify(bodyData);
+          res.write(bodyData);
+          res.end();
           return true;
         }
       }
