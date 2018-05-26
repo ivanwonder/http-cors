@@ -2,7 +2,7 @@ const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
-module.exports = {
+module.exports = [{
   entry: {
     main: './main.js',
     deleteLogFile: './electron/childprocess/deleteLogFile.js',
@@ -49,4 +49,15 @@ module.exports = {
       // }
     ])
   ]
-}
+}, {
+  entry: {
+    openProxy: './electron/http-server/openProxy.js'
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist/http-server/'),
+    filename: '[name].js',
+    library: '[name]',
+    libraryTarget: 'umd'
+  },
+  target: 'node'
+}]
