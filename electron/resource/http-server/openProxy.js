@@ -10,6 +10,7 @@ const MiniProxy = require('./cors-http');
 // })
 
 // myProxy.start()
+const {ADD_INTERCEPT_URL, ADD_INTERCEPT_URL_STATUS} = process.env;
 
 process.on('message', (m) => {
   const config = m.open
@@ -29,5 +30,9 @@ process.on('message', (m) => {
     })
 
     myProxy.start()
+  }
+  if (m.msgId === ADD_INTERCEPT_URL) {
+    require('./intercept-request').add(m.data);
+    process.send(ADD_INTERCEPT_URL_STATUS, {status: 1});
   }
 })

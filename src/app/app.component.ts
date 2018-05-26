@@ -1,21 +1,29 @@
-import { Component, OnInit, NgZone} from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy} from '@angular/core';
 import {Router, NavigationEnd, ActivatedRoute} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {EditObserveService} from './edit-observe.service';
+import {ElectronService} from './electron.service';
+import {MatSnackBar} from '@angular/material'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   editInstance = [];
+  ADD_INTERCEPT_URL_STATUS = '';
 
   constructor (
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private _edit$: EditObserveService
-  ) { }
+    private _edit$: EditObserveService,
+    private electronService: ElectronService,
+    private _zone: NgZone,
+    private snackBar: MatSnackBar
+  ) {
+    this.ADD_INTERCEPT_URL_STATUS = this.electronService.remote.require('./utils.js').eventConstant.ADD_INTERCEPT_URL_STATUS;
+  }
   ngOnInit() {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
       console.log(this.activatedRoute);
@@ -31,6 +39,14 @@ export class AppComponent implements OnInit {
     this._edit$.editDeleteObserve.subscribe(id => {
       this.editInstance = this.editInstance.filter(item => item.id !== String(id));
     });
+       
+    this.electronService.ipcRenderer.on(this.ADD_INTERCEPT_URL_STATUS, function (event, message) {
+      if (message.status) {
+        this.snackBar.open('PizzaPartyComponent', {
+          duration: 500,
+        });
+      }
+    });
   }
 
   getEditId(router: ActivatedRoute) {
@@ -42,5 +58,9 @@ export class AppComponent implements OnInit {
       return this.getEditId(router.children[0]);
     }
     return null;
+  }
+
+  ngOnDestroy() {
+    this.electronService.ipcRenderer.removeAllListeners(this.ADD_INTERCEPT_URL_STATUS);
   }
 }

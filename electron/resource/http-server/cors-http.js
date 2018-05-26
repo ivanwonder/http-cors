@@ -1,5 +1,6 @@
 const http = require('http');
 const url = require('url');
+const {interceptRequest} = require('./intercept-request');
 
 class MinProxy {
   constructor (options = {}) {
@@ -39,6 +40,10 @@ class MinProxy {
       res.setHeader('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
       res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
       res.end();
+      return;
+    }
+
+    if (interceptRequest(requestOptions, res)) {
       return;
     }
 

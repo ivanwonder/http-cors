@@ -24,22 +24,11 @@ function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({width: 800, height: 600})
 
-  // and load the index.html of the app.
-  // win.loadURL(url.format({
-  //   pathname: path.join(!isDev ? app.getAppPath() : path.resolve(__dirname), './resource/index.html'),
-  //   protocol: 'file:',
-  //   slashes: true
-  // }))
-
-  if (isDev) {
-    win.loadURL('http://localhost:4200/');
-  } else {
-    win.loadURL(url.format({
-      pathname: path.join(!isDev ? app.getAppPath() : path.resolve(__dirname), './my-app/index.html'),
-      protocol: 'file:',
-      slashes: true
-    }))
-  }
+  win.loadURL(url.format({
+    pathname: path.join(!isDev ? app.getAppPath() : path.resolve(__dirname, '../dist/'), './my-app/index.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
 
   mainWindow.set('mainWindow', win)
 

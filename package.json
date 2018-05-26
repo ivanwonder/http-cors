@@ -33,7 +33,9 @@
     "electron-is-dev": "^0.3.0",
     "electron-settings": "^3.2.0",
     "mkdirp": "^0.5.1",
+    "monaco-editor": "^0.13.1",
     "mousetrap": "^1.6.1",
+    "path-to-regexp": "^0.1.7",
     "rimraf": "^2.6.2",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"

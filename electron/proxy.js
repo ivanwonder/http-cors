@@ -4,6 +4,7 @@ const {app} = require('electron')
 const MyFile = require('./file/file')
 const isDev = require('electron-is-dev');
 const {_isWindows} = require('../utils/platform');
+const {eventConstant} = require('./utils');
 
 function openProxy (args, listen) {
   let _rej
@@ -20,7 +21,8 @@ function openProxy (args, listen) {
   const fork = require('child_process').fork
   const _ls = fork(path.join(!isDev ? app.getAppPath() : path.join(__dirname), './resource/http-server/openProxy.js'), [], {
     detached: !!_isWindows,
-    stdio: ['pipe', 'pipe', 'pipe', 'ipc']
+    stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+    env: Object.assign({ADD_INTERCEPT_URL: eventConstant.ADD_INTERCEPT_URL, ADD_INTERCEPT_URL_STATUS: eventConstant.ADD_INTERCEPT_URL_STATUS}, process.env)
   })
 
   _ls.on('close', (code) => {

@@ -58,7 +58,7 @@ export class CreateServeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.ipcRender.on('message', (event, message, time) => {
+    this.ipcRender.on('message', (event, message) => {
       this._zone.run(() => {
         if (message.error) {
           this.error.hasError = true;

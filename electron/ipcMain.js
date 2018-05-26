@@ -67,9 +67,20 @@ ipcMain.on('openLogFile', function (event, args) {
   type === 2 && shell.showItemInFolder(fileName)
 })
 
-const {PUT_TO_TRAY} = require('./utils').eventConstant;
+const {PUT_TO_TRAY, ADD_INTERCEPT_URL, ADD_INTERCEPT_URL_STATUS} = require('./utils').eventConstant;
 
 ipcMain.on(PUT_TO_TRAY, function () {
   const win = mainWindow.get('mainWindow');
   win && win.hide();
 });
+
+ipcMain.on(ADD_INTERCEPT_URL, function (event, arg) {
+  if (arg.id) {
+    const cp = childProcess.get(arg.id);
+    cp.send(ADD_INTERCEPT_URL, arg.data);
+    cp.once(ADD_INTERCEPT_URL_STATUS, function (env, _arg) {
+      const win = mainWindow.get('mainWindow');
+      win.webContents.send(ADD_INTERCEPT_URL_STATUS, {id: arg.id, data: _arg});
+    })
+  }
+})
