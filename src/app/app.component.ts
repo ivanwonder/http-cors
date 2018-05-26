@@ -4,6 +4,7 @@ import {filter} from 'rxjs/operators';
 import {EditObserveService} from './edit-observe.service';
 import {ElectronService} from './electron.service';
 import {MatSnackBar} from '@angular/material'
+import {EventNameService} from './share/service/event-name.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,6 @@ import {MatSnackBar} from '@angular/material'
 })
 export class AppComponent implements OnInit, OnDestroy {
   editInstance = [];
-  ADD_INTERCEPT_URL_STATUS = '';
 
   constructor (
     private router: Router,
@@ -20,9 +20,9 @@ export class AppComponent implements OnInit, OnDestroy {
     private _edit$: EditObserveService,
     private electronService: ElectronService,
     private _zone: NgZone,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private _eventName: EventNameService
   ) {
-    this.ADD_INTERCEPT_URL_STATUS = this.electronService.remote.require('./utils.js').eventConstant.ADD_INTERCEPT_URL_STATUS;
   }
   ngOnInit() {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
@@ -41,10 +41,10 @@ export class AppComponent implements OnInit, OnDestroy {
     });
        
     const self = this;
-    this.electronService.ipcRenderer.on(this.ADD_INTERCEPT_URL_STATUS, function (event, message) {
+    this.electronService.ipcRenderer.on(this._eventName.ADD_INTERCEPT_URL_STATUS, function (event, message) {
       if (message.data.status) {
         self._zone.run(() => {
-          self.snackBar.open('PizzaPartyComponent', '', {
+          self.snackBar.open('modify Successfully', '', {
             duration: 500,
             verticalPosition: 'top'
           });
@@ -65,6 +65,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.electronService.ipcRenderer.removeAllListeners(this.ADD_INTERCEPT_URL_STATUS);
+    this.electronService.ipcRenderer.removeAllListeners(this._eventName.ADD_INTERCEPT_URL_STATUS);
   }
 }

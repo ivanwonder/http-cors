@@ -16,6 +16,8 @@ import { EditJsonComponent } from './edit-json/edit-json.component';
 import {ServeInstanceService} from './serve-instance.service';
 import {EditObserveService} from './edit-observe.service';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {ShareModule} from './share/share.module';
+import {MatMenuModule} from '@angular/material/menu';
 
 const appRoutes: Routes = [{
   path: '',
@@ -32,6 +34,7 @@ const appRoutes: Routes = [{
     EditJsonComponent
   ],
   imports: [
+    ShareModule,
     BrowserModule,
     FormsModule,
     MatInputModule,
@@ -41,6 +44,7 @@ const appRoutes: Routes = [{
     MatCardModule,
     MatToolbarModule,
     MatSnackBarModule,
+    MatMenuModule,
     RouterModule.forRoot(appRoutes, {useHash: true})
   ],
   providers: [ElectronService, ServeInstanceService, EditObserveService],
