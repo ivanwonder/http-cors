@@ -1,8 +1,8 @@
 const {childProcess} = require('../utils/map')
 const path = require('path')
-const {app} = require('electron')
+// const {app} = require('electron')
 const MyFile = require('./file/file')
-const isDev = require('electron-is-dev');
+// const isDev = require('electron-is-dev');
 const {_isWindows} = require('../utils/platform');
 const {eventConstant} = require('./utils');
 
@@ -19,7 +19,7 @@ function openProxy (args, listen) {
   const id = new Date().getTime()
 
   const fork = require('child_process').fork
-  const _ls = fork(path.join(!isDev ? app.getAppPath() : path.join(__dirname), './http-server/openProxy.js'), [], {
+  const _ls = fork(path.join(__dirname, './http-server/openProxy.js'), [], {
     detached: !!_isWindows,
     stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
     env: Object.assign({ADD_INTERCEPT_URL: eventConstant.ADD_INTERCEPT_URL, ADD_INTERCEPT_URL_STATUS: eventConstant.ADD_INTERCEPT_URL_STATUS}, process.env)

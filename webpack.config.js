@@ -10,6 +10,10 @@ module.exports = [{
     utils: './electron/utils.js'
   },
   target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false
+  },
   externals: [
     function (context, request, callback) {
       if (/^electron$/.test(request)) {
@@ -59,5 +63,9 @@ module.exports = [{
     library: '[name]',
     libraryTarget: 'umd'
   },
-  target: 'node'
+  target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false
+  }
 }]
