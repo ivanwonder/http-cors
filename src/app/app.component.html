@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <a mat-button routerLink="/">create serve</a>
-  <button mat-button [matMenuTriggerFor]="menu">port</button>
+  <button mat-button [matMenuTriggerFor]="menu">{{currentPort}}</button>
   <mat-menu #menu>
     <a mat-menu-item *ngIf="editInstance.length === 0">no edited port, please press edit json button first</a>
     <a mat-menu-item *ngFor="let item of editInstance" [routerLink]="['edit', item.id, item.port]">{{item.port}}</a>

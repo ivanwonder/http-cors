@@ -3,7 +3,7 @@ import {Router, NavigationEnd, ActivatedRoute} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {EditObserveService} from './edit-observe.service';
 import {ElectronService} from './electron.service';
-import {MatSnackBar} from '@angular/material'
+import {MatSnackBar} from '@angular/material';
 import {EventNameService} from './share/service/event-name.service';
 
 @Component({
@@ -13,6 +13,7 @@ import {EventNameService} from './share/service/event-name.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   editInstance = [];
+  currentPort = 'port';
 
   constructor (
     private router: Router,
@@ -33,13 +34,16 @@ export class AppComponent implements OnInit, OnDestroy {
         if (!value) {
           this.editInstance.push(params);
         }
+        this.currentPort = params.port;
+      } else {
+        this.currentPort = 'port';
       }
       console.log(this.editInstance);
     });
     this._edit$.editDeleteObserve.subscribe(id => {
       this.editInstance = this.editInstance.filter(item => item.id !== String(id));
     });
-       
+
     const self = this;
     this.electronService.ipcRenderer.on(this._eventName.ADD_INTERCEPT_URL_STATUS, function (event, message) {
       if (message.data.status) {
@@ -48,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
             duration: 500,
             verticalPosition: 'top'
           });
-        })
+        });
       }
     });
   }

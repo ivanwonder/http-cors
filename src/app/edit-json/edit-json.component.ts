@@ -14,6 +14,7 @@ const EDITCONTENT = 'EDITCONTENT';
 export class EditJsonComponent implements OnInit, OnDestroy {
   @ViewChild('edit') _edit: ElementRef;
   cacheValue;
+  routeParam: {id: string; port: string};
 
   editIns;
   constructor(
@@ -24,7 +25,12 @@ export class EditJsonComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.cacheValue = this._saveCon.get(EDITCONTENT);
+    this.routeParam = <any>this.activatedRoute.snapshot.params;
+
+    this.cacheValue = this._saveCon.get(this.routeParam.port);
+    if (this.cacheValue) {
+      this.postMessage(this.cacheValue);
+    }
     this.listenResize();
     this.initMonaco();
   }
@@ -40,7 +46,7 @@ export class EditJsonComponent implements OnInit, OnDestroy {
   removeResize () {
     window.removeEventListener('resize', this.resizeListen.bind(this));
   }
-  
+
   initMonaco() {
     this.editIns = (<any>window).monaco.editor.create(this._edit.nativeElement, {
       language: 'json',
@@ -50,22 +56,22 @@ export class EditJsonComponent implements OnInit, OnDestroy {
 
   send () {
     const value = this.editIns.getValue();
-    const {ADD_INTERCEPT_URL, ADD_INTERCEPT_URL_STATUS} = this.electronService.remote.require('./utils.js').eventConstant;
-    this.electronService.ipcRenderer.send(ADD_INTERCEPT_URL, {
+    this.postMessage(value);
+  }
+
+  postMessage(value) {
+    this.electronService.ipcRenderer.send(this._eventName.ADD_INTERCEPT_URL, {
       id: this.activatedRoute.snapshot.params.id,
       data: value
     });
   }
 
   delete () {
-    this.electronService.ipcRenderer.send(this._eventName.ADD_INTERCEPT_URL, {
-      id: this.activatedRoute.snapshot.params.id,
-      data: {}
-    });
+    this.postMessage({});
   }
 
   ngOnDestroy() {
     this.removeResize();
-    this._saveCon.save(EDITCONTENT, this.editIns.getValue());
+    this._saveCon.save(this.routeParam.port, this.editIns.getValue());
   }
 }

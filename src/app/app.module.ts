@@ -9,7 +9,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
-import {RouterModule, Routes} from '@angular/router';
+import {RouterModule, Routes, RouteReuseStrategy} from '@angular/router';
 import {CreateServeComponent} from './create-serve/create-serve.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { EditJsonComponent } from './edit-json/edit-json.component';
@@ -18,13 +18,20 @@ import {EditObserveService} from './edit-observe.service';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {ShareModule} from './share/share.module';
 import {MatMenuModule} from '@angular/material/menu';
+import {CustomRouteReuseStrategy} from './router-strategy';
 
 const appRoutes: Routes = [{
   path: '',
-  component: CreateServeComponent
+  component: CreateServeComponent,
+  data: {
+    reuse: true
+  }
 }, {
   path: 'edit/:id/:port',
-  component: EditJsonComponent
+  component: EditJsonComponent,
+  data: {
+    reuse: false
+  }
 }];
 
 @NgModule({
@@ -47,7 +54,12 @@ const appRoutes: Routes = [{
     MatMenuModule,
     RouterModule.forRoot(appRoutes, {useHash: true})
   ],
-  providers: [ElectronService, ServeInstanceService, EditObserveService],
+  providers: [ElectronService, ServeInstanceService, EditObserveService,
+    {
+      provide: RouteReuseStrategy,
+      useClass: CustomRouteReuseStrategy
+    }
+  ],
   entryComponents: [CreateServeComponent],
   bootstrap: [AppComponent]
 })
