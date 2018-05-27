@@ -4,3 +4,4 @@ http-cors-win32-x64
 http-cors-darwin-x64
 log
 build
+electron/my-app

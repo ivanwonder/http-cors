@@ -25,7 +25,7 @@ function createWindow () {
   win = new BrowserWindow({width: 800, height: 600})
 
   win.loadURL(url.format({
-    pathname: path.join(!isDev ? app.getAppPath() : path.resolve(__dirname, '../dist/'), './my-app/index.html'),
+    pathname: path.join(!isDev ? app.getAppPath() : __dirname, './my-app/index.html'),
     protocol: 'file:',
     slashes: true
   }))

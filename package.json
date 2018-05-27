@@ -9,7 +9,7 @@
     "build": "webpack && ng build --prod",
     "package": "npm run build && electron-packager dist",
     "package-winstall": "npm run package && node ./script/build-winstall.js",
-    "serve": "ng build --watch"
+    "serve": "ng build --watch --output-path ./electron/my-app"
   },
   "config": {
     "electron_mirror": "https://npm.taobao.org/mirrors/electron/"

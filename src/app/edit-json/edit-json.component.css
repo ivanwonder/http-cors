@@ -2,3 +2,7 @@
   height: calc(100vh - 136px);
   margin: 8px;
 }
+
+.edit-button button + button {
+  margin-left: 20px;
+}

@@ -50,7 +50,8 @@ export class AppComponent implements OnInit, OnDestroy {
         self._zone.run(() => {
           self.snackBar.open('modify Successfully', '', {
             duration: 500,
-            verticalPosition: 'top'
+            // verticalPosition: 'top',
+            horizontalPosition: 'right'
           });
         });
       }
