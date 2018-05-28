@@ -4,3 +4,13 @@
 body {
   margin: 0;
 }
+
+body .mat-snack-bar-handset {
+  width: auto;
+}
+
+body .mat-snack-bar-handset .mat-snack-bar-container {
+  margin: 0;
+  max-width: inherit;
+  width: auto;
+}
