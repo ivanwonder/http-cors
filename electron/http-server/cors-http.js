@@ -32,13 +32,12 @@ class MinProxy {
 
     this.onBeforeRequest(requestOptions);
 
+    applyCorsStrategy(req, res);
+
     // preflight
     if (String.prototype.toLocaleLowerCase.call(requestOptions.method) === 'options') {
       res.statusCode = 200;
       res.setHeader('Content-Length', '0');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
-      res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
       res.end();
       return;
     }
@@ -49,11 +48,7 @@ class MinProxy {
 
     var remoteRequest = http.request(requestOptions, function (remoteResponse) {
       // write out headers to handle redirects
-      res.writeHead(remoteResponse.statusCode, remoteResponse.statusMessage || '', Object.assign({}, {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      }, remoteResponse.headers));
+      res.writeHead(remoteResponse.statusCode, remoteResponse.statusMessage || '', remoteResponse.headers);
 
       remoteResponse.pipe(res);
       // Res could not write, but it could close connection
@@ -77,4 +72,15 @@ class MinProxy {
   }
 }
 
+function applyCorsStrategy (req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (req.headers['access-control-request-method']) {
+    res.setHeader('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
+  }
+  if (req.headers['access-control-request-headers']) {
+    res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
+  }
+}
+
+module.exports = applyCorsStrategy;
 module.exports = MinProxy;
