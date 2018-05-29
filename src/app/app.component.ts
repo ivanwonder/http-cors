@@ -5,6 +5,7 @@ import {EditObserveService} from './edit-observe.service';
 import {ElectronService} from './electron.service';
 import {MatSnackBar} from '@angular/material';
 import {EventNameService} from './share/service/event-name.service';
+import {EditStatusService, EditStatus} from './share/service/edit-status.service';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ import {EventNameService} from './share/service/event-name.service';
 export class AppComponent implements OnInit, OnDestroy {
   editInstance = [];
   currentPort = 'port';
+  changeFlage = false;
 
   constructor (
     private router: Router,
@@ -22,9 +24,10 @@ export class AppComponent implements OnInit, OnDestroy {
     private electronService: ElectronService,
     private _zone: NgZone,
     private snackBar: MatSnackBar,
-    private _eventName: EventNameService
-  ) {
-  }
+    private _eventName: EventNameService,
+    private _editStatus: EditStatusService
+  ) { }
+
   ngOnInit() {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
       console.log(this.activatedRoute);
@@ -35,13 +38,19 @@ export class AppComponent implements OnInit, OnDestroy {
           this.editInstance.push(params);
         }
         this.currentPort = params.port;
+        this.changeFlagByStatus(this._editStatus.get(this.currentPort));
       } else {
         this.currentPort = 'port';
+        this.changeFlage = false;
       }
       console.log(this.editInstance);
     });
     this._edit$.editDeleteObserve.subscribe(id => {
       this.editInstance = this.editInstance.filter(item => item.id !== String(id));
+    });
+
+    this._editStatus.status$.subscribe((status) => {
+      this.changeFlagByStatus(status);
     });
 
     const self = this;
@@ -56,6 +65,14 @@ export class AppComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  changeFlagByStatus (status: EditStatus) {
+    if (status === 'INIT' || status === 'CHANGED') {
+      this.changeFlage = true;
+    } else {
+      this.changeFlage = false;
+    }
   }
 
   getEditId(router: ActivatedRoute) {

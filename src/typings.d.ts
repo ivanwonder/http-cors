@@ -11,3 +11,5 @@ interface Window {
 }
 
 declare var amdRequire: any;
+
+import 'monaco-editor/monaco'
