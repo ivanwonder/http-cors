@@ -18,16 +18,16 @@ export class ElectronService {
   constructor() {
     // Conditional imports
     if (this.isElectron()) {
-      this.ipcRenderer = window.require('electron').ipcRenderer;
-      this.webFrame = window.require('electron').webFrame;
-      this.remote = window.require('electron').remote;
+      this.ipcRenderer = (<any>window).require('electron').ipcRenderer;
+      this.webFrame = (<any>window).require('electron').webFrame;
+      this.remote = (<any>window).require('electron').remote;
 
-      this.childProcess = window.require('child_process');
-      this.fs = window.require('fs');
+      this.childProcess = (<any>window).require('child_process');
+      this.fs = (<any>window).require('fs');
     }
   }
 
   isElectron = () => {
-    return window && window.process && window.process.type;
+    return (<any>window) && (<any>window).process && (<any>window).process.type;
   }
 }
